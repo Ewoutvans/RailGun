@@ -1,12 +1,10 @@
 package cloud.zeroprox.railgun;
 
 import com.flowpowered.math.vector.Vector3d;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.property.entity.EyeLocationProperty;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.effect.particle.ParticleEffect;
-import org.spongepowered.api.effect.particle.ParticleOptions;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.Entity;
@@ -21,11 +19,9 @@ import org.spongepowered.api.item.FireworkShapes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.util.Color;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -57,11 +53,11 @@ public class Listeners {
         if (!player.hasPermission("railgun.use")) {
             return;
         }
-        if (!player.getItemInHand(HandTypes.MAIN_HAND).orElse(ItemStack.empty()).equalTo(RailGun.getInstance().s_item)) {
+        if (!player.getItemInHand(HandTypes.MAIN_HAND).orElse(ItemStack.empty()).equalTo(RailGun.getInstance().getItem())) {
             return;
         }
         if (cooldown.hasCooldown(player)) {
-            player.sendMessage(ChatTypes.ACTION_BAR, RailGun.getInstance().t_recharging.apply().build());
+            player.sendMessage(ChatTypes.ACTION_BAR, RailGun.getInstance().getRechargingTemplate().apply().build());
             return;
         }
 
@@ -80,7 +76,7 @@ public class Listeners {
 
         int complete = 0;
         int last = 0;
-        for (int i = 1; i <= RailGun.getInstance().s_range; i++) {
+        for (int i = 1; i <= RailGun.getInstance().getRange(); i++) {
             Vector3d newLoc = new Vector3d(px + i * x, py + i * z, pz + i * y);
             Transform<World> transform = new Transform(player.getWorld(), newLoc);
 
@@ -93,9 +89,9 @@ public class Listeners {
             transform.getExtent().spawnParticles(effectSpell, transform.getPosition());
         }
 
-        cooldown.setCoolmap(player, RailGun.getInstance().s_cooldown);
+        cooldown.setCoolmap(player, RailGun.getInstance().getCooldown());
 
-        if (RailGun.getInstance().s_cancel_event) {
+        if (RailGun.getInstance().shouldCancelEvent()) {
             event.setCancelled(true);
         }
     }
@@ -106,7 +102,7 @@ public class Listeners {
         loc.getExtent().getEntities(entity -> distance(entity.getTransform(), loc) < focus && entity.getType() != EntityTypes.FIREWORK).forEach(entity -> {
             if (entity == shooter) return;
             loc.getExtent().spawnParticles(effectKill, loc.getPosition());
-            if (RailGun.getInstance().s_fireworks) {
+            if (RailGun.getInstance().shouldFireworks()) {
                 spawnFirework(FireworkEffect.builder().colors(Color.BLUE).shape(FireworkShapes.BURST).build(), loc);
             } else {
                 loc.getExtent().spawnParticles(effectKill, loc.getPosition());

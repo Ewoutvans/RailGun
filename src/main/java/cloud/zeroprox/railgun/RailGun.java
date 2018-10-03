@@ -19,17 +19,16 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.security.auth.login.Configuration;
 import java.io.IOException;
 import java.nio.file.Path;
 
 @Plugin(id = "railgun", name = "RailGun", description = "RailGun", url = "https://zeroprox.cloud", authors = { "ewoutvs_", "Alagild" })
 public class RailGun {
 
-    public ItemStack s_item;
-    public TextTemplate t_recharging, t_recharged;
-    public Integer s_cooldown, s_range;
-    public Boolean s_cancel_event, s_fireworks;
+    private ItemStack s_item;
+    private TextTemplate t_recharging, t_recharged;
+    private int s_cooldown, s_range;
+    private boolean s_cancel_event, s_fireworks;
 
     @Inject
     private Logger logger;
@@ -71,6 +70,34 @@ public class RailGun {
 
     public static RailGun getInstance() {
         return instance;
+    }
+
+    public TextTemplate getRechargedTemplate() {
+        return this.t_recharged;
+    }
+
+    public TextTemplate getRechargingTemplate() {
+        return this.t_recharging;
+    }
+
+    public ItemStack getItem() {
+        return this.s_item;
+    }
+
+    public int getRange() {
+        return this.s_range;
+    }
+
+    public int getCooldown() {
+        return this.s_cooldown;
+    }
+
+    public boolean shouldCancelEvent() {
+        return this.s_cancel_event;
+    }
+
+    public boolean shouldFireworks() {
+        return this.s_fireworks;
     }
 
     private void loadConfig() throws IOException, ObjectMappingException {

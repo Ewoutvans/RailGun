@@ -16,7 +16,7 @@ public class Cooldown {
         coolmap.put(player.getUniqueId(), System.currentTimeMillis() / 1000);
         Sponge.getScheduler().createTaskBuilder().execute(task -> {
             coolmap.remove(player.getUniqueId());
-            player.sendMessage(ChatTypes.ACTION_BAR, RailGun.getInstance().t_recharged.apply().build());
+            player.sendMessage(ChatTypes.ACTION_BAR, RailGun.getInstance().getRechargedTemplate().apply().build());
         }).delay(seconds, TimeUnit.SECONDS).submit(RailGun.getInstance());
     }
 
